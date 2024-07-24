@@ -1,0 +1,3 @@
+# python launch.py --config configs/tsd.yaml --train --gpu 0 system.prompt_processor.prompt="A high quality photo of ice cream sundae" system.n_particles=8 system.prompt_processor.hiper_scale=0.9 system.guidance.token_len=8 system.hiper_path="output_hiper/A_high_quality_photo_of_an_ice_cream_sundae/hiper_5/ckpt" system.guidance.use_lora=true
+
+python launch.py --config configs/tsd.yaml --train --gpu 0 system.prompt_processor.prompt="A high quality photo of ice cream sundae" system.n_particles=8 system.prompt_processor.hiper_scale=0.9 system.guidance.token_len=8 system.hiper_path="/root/minhlnh/hyper_dreramer/um2024/threestudio/data/A_high_quality_photo_of_an_ice_cream_sundae/hiper_5/ckpt" system.guidance.use_lora=true

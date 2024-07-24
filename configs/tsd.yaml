@@ -1,0 +1,125 @@
+name: "tsd"
+tag: "${rmspace:${system.prompt_processor.prompt},_}"
+exp_root_dir: "outputs"
+seed: 200000
+
+data_type: "random-camera-datamodule"
+data:
+  batch_size: [1, 1]
+  # 0-4999: 64x64, >=5000: 512x512
+  # this drastically reduces VRAM usage as empty space is pruned in early training
+  width: [64, 256]
+  height: [64, 256]
+  resolution_milestones: [15000]
+  camera_distance_range: [1.0, 1.5]
+  fovy_range: [40, 70]
+  elevation_range: [-10, 45]
+  camera_perturb: 0.
+  center_perturb: 0.
+  up_perturb: 0.
+  eval_camera_distance: 1.5
+  eval_fovy_deg: 70.
+
+system_type: "tsd-system"
+system:
+  stage: coarse
+  hiper_path: null
+  geometry_type: "implicit-volume-multi"
+  n_particles: 8
+  geometry:
+    radius: 1.0
+    normal_type: null
+    n_particles: ${system.n_particles}
+
+    density_bias: "blob_magic3d"
+    density_activation: softplus
+    density_blob_scale: 10.
+    density_blob_std: 0.5
+
+    pos_encoding_config:
+      otype: HashGrid
+      n_levels: 16
+      n_features_per_level: 2
+      log2_hashmap_size: 19
+      base_resolution: 16
+      per_level_scale: 1.447269237440378 # max resolution 4096
+
+  material_type: "no-material-multi"
+  material:
+    n_particles: ${system.n_particles}
+    n_output_dims: 3
+    color_activation: sigmoid
+
+  background_type: "neural-environment-map-background-multi"
+  background:
+    n_particles: ${system.n_particles}
+    color_activation: sigmoid
+    random_aug: true
+
+  renderer_type: "nerf-volume-renderer-multi"
+  renderer:
+    radius: ${system.geometry.radius}
+    num_samples_per_ray: 512
+
+  prompt_processor_type: "stable-diffusion-prompt-processor-tsd"
+  prompt_processor:
+    pretrained_model_name_or_path: "/root/minhlnh/hyper_dreramer/um2024/stable-diffusion-v1-4"
+    prompt: ???
+    front_threshold: 30.
+    back_threshold: 30.
+    hiper_scale: 0.9
+
+  guidance_type: "stable-diffusion-tsd-guidance"
+  guidance:
+    pretrained_model_name_or_path: "/root/minhlnh/hyper_dreramer/um2024/stable-diffusion-v1-4"
+    pretrained_model_name_or_path_lora: "/root/minhlnh/hyper_dreramer/um2024/stable-diffusion-v1-4"
+    guidance_scale: 7.5
+    min_step_percent: 0.02
+    max_step_percent: [13000, 0.98, 0.5, 13001] # annealed to 0.5 after 13000 steps
+    use_lora: false
+    token_len: 8
+    n_particles: ${system.geometry.n_particles}
+    grad_clip: [0, 2.0, 8.0, 1000]
+
+  loggers:
+    wandb:
+      enable: false
+      project: "threestudio"
+      name: None
+
+  loss:
+    lambda_vsd: 1.
+    lambda_lora: 1.
+    lambda_orient: 0.
+    lambda_sparsity: 10.
+    lambda_opaque: [15000, 0.0, 1000.0, 15001]
+    lambda_z_variance: 0.
+  optimizer:
+    name: AdamW
+    args:
+      betas: [0.9, 0.99]
+      eps: 1.e-15
+    params:
+      geometry.encoding:
+        lr: 0.001
+      geometry.density_network:
+        lr: 0.001
+      geometry.feature_network:
+        lr: 0.001
+      background:
+        lr: 0.001
+      guidance:
+        lr: 0.0001
+
+trainer:
+  max_steps: 50000
+  log_every_n_steps: 1
+  num_sanity_val_steps: 0
+  val_check_interval: 200
+  enable_progress_bar: true
+  precision: 16
+
+checkpoint:
+  save_last: true
+  save_top_k: -1
+  every_n_train_steps: 2000
