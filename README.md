@@ -23,9 +23,9 @@ Details of the model architecture and experimental results can be found in [our 
 ```bibtext
 @inproceedings{DiverseDream,
       title={Diverse Text-to-3D Synthesis with Augmented Text Embedding}, 
-      author={Uy Dieu Tran, Minh Luu, Phong Ha Nguyen, Khoi Nguyen, Binh-Son Hua},
+      author={Uy Dieu Tran and Minh Luu and Phong Ha Nguyen and Khoi Nguyen and Binh-Son Hua},
       year={2024},
-      booktitle={ECCV},
+      booktitle={Proceedings of the European Conference on Computer Vision},
 }
 ```
 **Please CITE** our paper whenever this repository is used to help produce published results or incorporated into other software.
