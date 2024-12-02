@@ -21,11 +21,13 @@ Text-to-3D synthesis has recently emerged as a new approach to sampling 3D model
 
 Details of the model architecture and experimental results can be found in [our paper](https://arxiv.org/abs/2312.02192):
 ```bibtext
-@inproceedings{DiverseDream,
-      title={Diverse Text-to-3D Synthesis with Augmented Text Embedding}, 
-      author={Uy Dieu Tran and Minh Luu and Phong Ha Nguyen and Khoi Nguyen and Binh-Son Hua},
-      year={2024},
-      booktitle={Proceedings of the European Conference on Computer Vision},
+@inproceedings{tran2025diverse,
+  title={Diverse Text-to-3D Synthesis with Augmented Text Embedding},
+  author={Tran, Uy Dieu and Luu, Minh and Nguyen, Phong Ha and Nguyen, Khoi and Hua, Binh-Son},
+  booktitle={European Conference on Computer Vision},
+  pages={217--235},
+  year={2025},
+  organization={Springer}
 }
 ```
 **Please CITE** our paper whenever this repository is used to help produce published results or incorporated into other software.
